@@ -18,20 +18,25 @@ class CategoriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
                 TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable(),
+                TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Diperbarui')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->label('Dihapus')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

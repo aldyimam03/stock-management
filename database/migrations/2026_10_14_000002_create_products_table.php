@@ -21,9 +21,9 @@ return new class extends Migration
 
             // Kategori & Satuan
             $table->foreignId('category_id')                     // Relasi ke tabel categories
-              ->nullable()
-              ->constrained()
-              ->nullOnDelete();
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
             $table->string('unit')->default('pcs');              // Satuan: pcs, kg, box, liter
 
             // Harga

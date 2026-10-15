@@ -22,36 +22,47 @@ class ProductsTable
                 TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 TextColumn::make('category_id')
-                    ->numeric()
+                    ->label('Kategori')
+                    ->getStateUsing(fn ($record) => $record->category?->name)
                     ->sortable(),
                 TextColumn::make('unit')
+                    ->label('Satuan')
                     ->searchable(),
                 TextColumn::make('cost_price')
-                    ->money()
+                    ->label('Harga Beli')
+                    ->money('IDR', locale: 'id')
                     ->sortable(),
                 TextColumn::make('selling_price')
-                    ->money()
+                    ->label('Harga Jual')
+                    ->money('IDR', locale: 'id')
                     ->sortable(),
                 TextColumn::make('stock_quantity')
+                    ->label('Stok')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('minimum_stock')
+                    ->label('Stok Minimum')
                     ->numeric()
                     ->sortable(),
                 IconColumn::make('is_active')
+                    ->label('Aktif')
                     ->boolean(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Diperbarui')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->label('Dihapus')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

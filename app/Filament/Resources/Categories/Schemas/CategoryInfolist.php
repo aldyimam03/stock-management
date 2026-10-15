@@ -12,19 +12,26 @@ class CategoryInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
-                TextEntry::make('slug'),
+                TextEntry::make('name')
+                    ->label('Nama'),
+                TextEntry::make('slug')
+                    ->label('Slug')
+                    ->copyable(),
                 TextEntry::make('description')
+                    ->label('Deskripsi')
                     ->placeholder('-')
                     ->columnSpanFull(),
                 TextEntry::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat')
+                    ->dateTime('d/m/Y H:i')
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
-                    ->dateTime()
+                    ->label('Diperbarui')
+                    ->dateTime('d/m/Y H:i')
                     ->placeholder('-'),
                 TextEntry::make('deleted_at')
-                    ->dateTime()
+                    ->label('Dihapus')
+                    ->dateTime('d/m/Y H:i')
                     ->visible(fn (Category $record): bool => $record->trashed()),
             ]);
     }

@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Testing\Fluent\Concerns\Has;
 
 class Product extends Model
 {
+    /** @use HasFactory<ProductFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -25,12 +27,15 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'cost_price'      => 'decimal:2',
-        'selling_price'   => 'decimal:2',
+        'cost_price' => 'decimal:2',
+        'selling_price' => 'decimal:2',
         'is_active' => 'boolean',
     ];
 
-    public function category()
+    /**
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
