@@ -37,7 +37,8 @@ class WarehousesTable
                     ->toggleable(),
                 IconColumn::make('is_active')
                     ->label('Aktif')
-                    ->boolean()
+                    ->badge()
+                    ->color(fn (bool $state): string => $state ? 'success' : 'danger')
                     ->sortable(),
                 IconColumn::make('is_default')
                     ->label('Default')

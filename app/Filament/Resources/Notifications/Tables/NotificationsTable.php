@@ -19,6 +19,15 @@ class NotificationsTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('type')
+                    ->label('Tipe')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'info' => 'info',
+                        'warning' => 'warning',
+                        'error' => 'danger',
+                        'success' => 'success',
+                        default => 'gray',
+                    })
                     ->searchable(),
                 TextColumn::make('title')
                     ->searchable(),

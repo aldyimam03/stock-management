@@ -50,9 +50,10 @@ class CustomersTable
                     ->sortable()
                     ->toggleable()
                     ->color(fn ($state) => $state > 0 ? 'danger' : 'success'),
-                IconColumn::make('is_active')
+                TextColumn::make('is_active')
                     ->label('Aktif')
-                    ->boolean()
+                    ->badge()
+                    ->color(fn (bool $state): string => $state ? 'success' : 'danger')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Dibuat')

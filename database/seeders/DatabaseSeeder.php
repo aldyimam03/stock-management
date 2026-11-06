@@ -30,6 +30,15 @@ class DatabaseSeeder extends Seeder
             UnitOfMeasureSeeder::class,
             NumberSeriesSeeder::class,
             TaxRateSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+            PurchaseOrderSeeder::class,
+            SalesOrderSeeder::class,
+            GoodsReceiptSeeder::class,
+            ShipmentSeeder::class,
+            StockMovementSeeder::class,
+            StockBalanceSeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }

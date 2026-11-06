@@ -41,7 +41,13 @@ class SuppliersTable
                     ->toggleable(),
                 TextColumn::make('country')
                     ->label('Negara')
-                    ->badge(),
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'ID' => 'success',
+                        'US' => 'primary',
+                        'CN' => 'warning',
+                        default => 'gray',
+                    }),
                 IconColumn::make('is_active')
                     ->label('Aktif')
                     ->boolean()

@@ -38,6 +38,12 @@ class StockBalancesTable
                     ->numeric(decimalPlaces: 2)
                     ->sortable()
                     ->color(fn ($state) => $state > 0 ? 'success' : 'danger'),
+                TextColumn::make('stock_status')
+                    ->label('Status Stok')
+                    ->getStateUsing(fn ($record) => $record->available_quantity > 0 ? 'Tersedia' : 'Habis')
+                    ->badge()
+                    ->color(fn ($state) => $state === 'Tersedia' ? 'success' : 'danger')
+                    ->sortable(),
                 TextColumn::make('average_cost')
                     ->label('Harga Rata-rata')
                     ->money('IDR')

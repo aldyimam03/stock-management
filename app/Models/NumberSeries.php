@@ -31,7 +31,9 @@ class NumberSeries extends Model
 
     public function getNextNumber(): int
     {
-        return $this->increment('next_number')->next_number - 1;
+        $this->increment('next_number');
+        $this->refresh();
+        return $this->next_number - 1;
     }
 
     public function generateNumber(): string

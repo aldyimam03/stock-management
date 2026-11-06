@@ -26,7 +26,13 @@ class TaxRatesTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('type')
-                    ->badge(),
+                    ->label('Tipe')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'percent' => 'info',
+                        'amount' => 'warning',
+                        default => 'gray',
+                    }),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')
