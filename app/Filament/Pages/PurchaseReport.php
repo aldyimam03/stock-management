@@ -25,6 +25,11 @@ class PurchaseReport extends Page implements HasTable
     protected static \UnitEnum|string|null $navigationGroup = 'Laporan';
     protected static ?string $title = 'Laporan Pembelian';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) \App\Models\PurchaseOrder::count();
+    }
+
     public ?string $status = null;
     public ?int $supplierId = null;
     public ?int $warehouseId = null;

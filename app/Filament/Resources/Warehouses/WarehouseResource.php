@@ -23,6 +23,11 @@ class WarehouseResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingStorefront;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Warehouse::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return WarehouseForm::configure($schema);

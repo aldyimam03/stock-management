@@ -23,6 +23,11 @@ class StockReport extends Page implements HasTable
         protected static \UnitEnum|string|null $navigationGroup = 'Laporan';
     protected static ?string $title = 'Laporan Stok Inventory';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) \App\Models\StockBalance::count();
+    }
+
     public ?int $warehouseId = null;
 
     public function mount(): void

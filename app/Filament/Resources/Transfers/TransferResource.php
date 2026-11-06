@@ -20,6 +20,11 @@ class TransferResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Transfer::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return TransferForm::configure($schema);

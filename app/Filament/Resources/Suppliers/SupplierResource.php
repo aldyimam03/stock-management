@@ -23,6 +23,11 @@ class SupplierResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Supplier::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SupplierForm::configure($schema);

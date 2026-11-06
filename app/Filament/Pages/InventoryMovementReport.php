@@ -27,6 +27,11 @@ class InventoryMovementReport extends Page implements HasTable
     protected static \UnitEnum|string|null $navigationGroup = 'Laporan';
     protected static ?string $title = 'Laporan Mutasi Stok';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) \App\Models\StockMovement::count();
+    }
+
     public ?string $type = null;
     public ?int $productId = null;
     public ?int $warehouseId = null;

@@ -25,6 +25,11 @@ class SalesReport extends Page implements HasTable
     protected static \UnitEnum|string|null $navigationGroup = 'Laporan';
     protected static ?string $title = 'Laporan Penjualan';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) \App\Models\SalesOrder::count();
+    }
+
     public ?string $status = null;
     public ?int $customerId = null;
     public ?int $warehouseId = null;

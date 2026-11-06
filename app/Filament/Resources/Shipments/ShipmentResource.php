@@ -22,6 +22,11 @@ class ShipmentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Shipment::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ShipmentForm::configure($schema);

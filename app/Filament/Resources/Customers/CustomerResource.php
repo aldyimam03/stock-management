@@ -23,6 +23,11 @@ class CustomerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Customer::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return CustomerForm::configure($schema);

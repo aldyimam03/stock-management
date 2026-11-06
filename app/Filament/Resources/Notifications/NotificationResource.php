@@ -20,6 +20,11 @@ class NotificationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Notification::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return NotificationForm::configure($schema);
