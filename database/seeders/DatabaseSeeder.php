@@ -27,6 +27,9 @@ class DatabaseSeeder extends Seeder
             SupplierSeeder::class,
             CustomerSeeder::class,
             WarehouseSeeder::class,
+            UnitOfMeasureSeeder::class,
+            NumberSeriesSeeder::class,
+            TaxRateSeeder::class,
         ]);
     }
 }
