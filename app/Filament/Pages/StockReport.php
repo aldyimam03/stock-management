@@ -5,11 +5,10 @@ namespace App\Filament\Pages;
 use App\Models\StockBalance;
 use App\Models\Product;
 use App\Models\Warehouse;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -67,7 +66,7 @@ class StockReport extends Page implements HasTable
                     ->color(fn ($state) => $state < 10 ? 'danger' : ($state < 50 ? 'warning' : 'success')),
             ])
             ->filters([
-                Select::make('warehouse_id')
+                SelectFilter::make('warehouse_id')
                     ->label('Filter Warehouse')
                     ->options(Warehouse::pluck('name', 'id')->toArray())
                     ->searchable()

@@ -6,9 +6,10 @@ use App\Models\PurchaseOrder;
 use App\Models\Supplier;
 use App\Models\Warehouse;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -80,7 +81,7 @@ class PurchaseReport extends Page implements HasTable
                     ->sortable(),
             ])
             ->filters([
-                Select::make('status')
+                SelectFilter::make('status')
                     ->label('Status')
                     ->options([
                         'draft' => 'Draft',
@@ -89,20 +90,32 @@ class PurchaseReport extends Page implements HasTable
                         'received' => 'Received',
                         'cancelled' => 'Cancelled',
                     ]),
-                Select::make('supplier_id')
+                SelectFilter::make('supplier_id')
                     ->label('Supplier')
                     ->options(Supplier::pluck('name', 'id')->toArray())
                     ->searchable()
                     ->preload(),
-                Select::make('warehouse_id')
+                SelectFilter::make('warehouse_id')
                     ->label('Warehouse')
                     ->options(Warehouse::pluck('name', 'id')->toArray())
                     ->searchable()
                     ->preload(),
-                DatePicker::make('date_from')
-                    ->label('Dari Tanggal'),
-                DatePicker::make('date_to')
-                    ->label('Sampai Tanggal'),
+                Filter::make('date_from')
+                    ->label('Dari Tanggal')
+                    ->form([
+                        DatePicker::make('date_from')
+                            ->label('Dari Tanggal')
+                            ->displayFormat('d/m/Y'),
+                    ])
+                    ->query(fn ($query, $data) => $query->when($data['date_from'], fn ($q) => $q->whereDate('order_date', '>=', $data['date_from']))),
+                Filter::make('date_to')
+                    ->label('Sampai Tanggal')
+                    ->form([
+                        DatePicker::make('date_to')
+                            ->label('Sampai Tanggal')
+                            ->displayFormat('d/m/Y'),
+                    ])
+                    ->query(fn ($query, $data) => $query->when($data['date_to'], fn ($q) => $q->whereDate('order_date', '<=', $data['date_to']))),
             ])
             ->defaultSort('order_date', 'desc');
     }

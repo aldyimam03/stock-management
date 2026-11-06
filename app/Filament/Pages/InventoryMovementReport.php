@@ -6,9 +6,12 @@ use App\Models\StockMovement;
 use App\Models\Product;
 use App\Models\Warehouse;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -84,7 +87,7 @@ class InventoryMovementReport extends Page implements HasTable
                     ->toggleable(),
             ])
             ->filters([
-                Select::make('type')
+                SelectFilter::make('type')
                     ->label('Tipe Mutasi')
                     ->options([
                         'in' => 'Masuk',
@@ -93,20 +96,32 @@ class InventoryMovementReport extends Page implements HasTable
                         'transfer_in' => 'Transfer In',
                         'transfer_out' => 'Transfer Out',
                     ]),
-                Select::make('product_id')
+                SelectFilter::make('product_id')
                     ->label('Produk')
                     ->options(Product::pluck('name', 'id')->toArray())
                     ->searchable()
                     ->preload(),
-                Select::make('warehouse_id')
+                SelectFilter::make('warehouse_id')
                     ->label('Warehouse')
                     ->options(Warehouse::pluck('name', 'id')->toArray())
                     ->searchable()
                     ->preload(),
-                DatePicker::make('date_from')
-                    ->label('Dari Tanggal'),
-                DatePicker::make('date_to')
-                    ->label('Sampai Tanggal'),
+                Filter::make('date_from')
+                    ->label('Dari Tanggal')
+                    ->form([
+                        DatePicker::make('date_from')
+                            ->label('Dari Tanggal')
+                            ->displayFormat('d/m/Y'),
+                    ])
+                    ->query(fn ($query, $data) => $query->when($data['date_from'], fn ($q) => $q->whereDate('created_at', '>=', $data['date_from']))),
+                Filter::make('date_to')
+                    ->label('Sampai Tanggal')
+                    ->form([
+                        DatePicker::make('date_to')
+                            ->label('Sampai Tanggal')
+                            ->displayFormat('d/m/Y'),
+                    ])
+                    ->query(fn ($query, $data) => $query->when($data['date_to'], fn ($q) => $q->whereDate('created_at', '<=', $data['date_to']))),
             ])
             ->defaultSort('created_at', 'desc');
     }
