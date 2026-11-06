@@ -5,7 +5,6 @@ namespace App\Filament\Pages;
 use App\Models\StockBalance;
 use App\Models\Product;
 use App\Models\Warehouse;
-use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -71,12 +70,6 @@ class StockReport extends Page implements HasTable
                     ->options(Warehouse::pluck('name', 'id')->toArray())
                     ->searchable()
                     ->preload(),
-            ])
-            ->headerActions([
-                Action::make('export')
-                    ->label('Export CSV')
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->color('success'),
             ])
             ->defaultSort('quantity', 'asc');
     }
