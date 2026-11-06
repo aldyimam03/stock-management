@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             StockMovementSeeder::class,
             StockBalanceSeeder::class,
             NotificationSeeder::class,
+            TransferSeeder::class,
         ]);
     }
 }
