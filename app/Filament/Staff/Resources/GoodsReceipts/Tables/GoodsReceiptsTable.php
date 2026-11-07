@@ -6,7 +6,6 @@ use App\Models\Product;
 use Filament\Actions\EditAction;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
-use Filament\Tables\Columns\GroupedTextColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -22,21 +21,19 @@ class GoodsReceiptsTable
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
-                GroupedTextColumn::make([
-                    TextColumn::make('product_code')
-                        ->label('Code')
-                        ->searchable(),
-                    TextColumn::make('product_name')
-                        ->label('Nama')
-                        ->toggleable(),
-                    TextColumn::make('quantity')
-                        ->label('Qty')
-                        ->sortable(),
-                    TextColumn::make('unit_price')
-                        ->label('Harga')
-                        ->money('IDR')
-                        ->toggleable(),
-                ]),
+                TextColumn::make('product_code')
+                    ->label('Code')
+                    ->searchable(),
+                TextColumn::make('product_name')
+                    ->label('Nama')
+                    ->toggleable(),
+                TextColumn::make('quantity')
+                    ->label('Qty')
+                    ->sortable(),
+                TextColumn::make('unit_price')
+                    ->label('Harga')
+                    ->money('IDR')
+                    ->toggleable(),
                 TextColumn::make('warehouse.name')
                     ->label('Warehouse')
                     ->searchable()

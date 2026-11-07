@@ -3,7 +3,6 @@
 namespace App\Filament\Staff\Resources\SalesReturns\Tables;
 
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\GroupedTextColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -19,22 +18,20 @@ class SalesReturnsTable
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
-                GroupedTextColumn::make([
-                    TextColumn::make('product_code')
-                        ->label('Code')
-                        ->searchable(),
-                    TextColumn::make('product_name')
-                        ->label('Nama')
-                        ->toggleable(),
-                    TextColumn::make('quantity')
-                        ->label('Qty Retur')
-                        ->numeric()
-                        ->sortable(),
-                    TextColumn::make('unit_price')
-                        ->label('Harga')
-                        ->money('IDR')
-                        ->toggleable(),
-                ]),
+                TextColumn::make('product_code')
+                    ->label('Code')
+                    ->searchable(),
+                TextColumn::make('product_name')
+                    ->label('Nama')
+                    ->toggleable(),
+                TextColumn::make('quantity')
+                    ->label('Qty Retur')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('unit_price')
+                    ->label('Harga')
+                    ->money('IDR')
+                    ->toggleable(),
                 TextColumn::make('shipment.shipment_number')
                     ->label('Shipment Asal')
                     ->searchable()
