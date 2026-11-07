@@ -9,6 +9,8 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\EmbeddedTable;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -37,6 +39,20 @@ class InventoryMovementReport extends Page implements HasTable
     public ?int $warehouseId = null;
     public ?string $dateFrom = null;
     public ?string $dateTo = null;
+
+    public function mount(): void
+    {
+        $this->mountInteractsWithTable();
+        $this->bootedInteractsWithTable();
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                EmbeddedTable::make(),
+            ]);
+    }
 
     public function table(Table $table): Table
     {

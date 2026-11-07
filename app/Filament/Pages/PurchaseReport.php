@@ -7,6 +7,8 @@ use App\Models\Supplier;
 use App\Models\Warehouse;
 use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\EmbeddedTable;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -36,6 +38,20 @@ class PurchaseReport extends Page implements HasTable
     public ?string $dateFrom = null;
     public ?string $dateTo = null;
 
+    public function mount(): void
+    {
+        $this->mountInteractsWithTable();
+        $this->bootedInteractsWithTable();
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                EmbeddedTable::make(),
+            ]);
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -46,7 +62,7 @@ class PurchaseReport extends Page implements HasTable
                     ->when($this->warehouseId, fn ($q) => $q->where('warehouse_id', $this->warehouseId))
                     ->when($this->dateFrom, fn ($q) => $q->whereDate('order_date', '>=', $this->dateFrom))
                     ->when($this->dateTo, fn ($q) => $q->whereDate('order_date', '<=', $this->dateTo))
-                    ->with(['supplier', 'warehouse', 'createdBy'])
+                    ->with(['supplier', 'warehouse'])
             )
             ->columns([
                 TextColumn::make('order_number')

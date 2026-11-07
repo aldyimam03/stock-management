@@ -6,6 +6,8 @@ use App\Models\StockBalance;
 use App\Models\Product;
 use App\Models\Warehouse;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\EmbeddedTable;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -32,7 +34,17 @@ class StockReport extends Page implements HasTable
 
     public function mount(): void
     {
+        $this->mountInteractsWithTable();
         $this->warehouseId = null;
+        $this->bootedInteractsWithTable();
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                EmbeddedTable::make(),
+            ]);
     }
 
     public function table(Table $table): Table

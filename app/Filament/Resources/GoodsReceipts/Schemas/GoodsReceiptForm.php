@@ -5,7 +5,7 @@ namespace App\Filament\Resources\GoodsReceipts\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Grid;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
 class GoodsReceiptForm
