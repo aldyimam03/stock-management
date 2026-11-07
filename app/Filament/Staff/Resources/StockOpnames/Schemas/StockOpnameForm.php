@@ -29,19 +29,23 @@ class StockOpnameForm
                 Grid::make(4)->schema([
                     TextInput::make('product_code')
                         ->label('Code Barang')
-                        ->disabledState(fn (): null => null),
+                        ->disabled()
+                        ->dehydrated(false),
                     TextInput::make('product_name')
                         ->label('Nama Barang')
-                        ->disabledState(fn (): null => null),
+                        ->disabled()
+                        ->dehydrated(false),
                     TextInput::make('system_quantity')
                         ->label('Qty di Sistem')
                         ->numeric()
-                        ->disabledState(fn (): null => null)
+                        ->disabled()
+                        ->dehydrated(false)
                         ->suffix('- sistem'),
                     TextInput::make('actual_quantity')
                         ->label('Qty di Gudang (Actual)')
                         ->numeric()
-                        ->disabledState(fn (): null => null)
+                        ->disabled()
+                        ->dehydrated(false)
                         ->suffix('- actual'),
                 ]),
                 Select::make('status')

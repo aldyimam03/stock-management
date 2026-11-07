@@ -42,10 +42,12 @@ class GoodsReceiptForm
                 Grid::make(4)->schema([
                     TextInput::make('product_code')
                         ->label('Code Barang')
-                        ->disabledState(fn (): null => null),
+                        ->disabled()
+                        ->dehydrated(false),
                     TextInput::make('product_name')
                         ->label('Nama Barang')
-                        ->disabledState(fn (): null => null),
+                        ->disabled()
+                        ->dehydrated(false),
                     TextInput::make('quantity')
                         ->label('Jumlah')
                         ->numeric()
