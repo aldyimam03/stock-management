@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\StockOpnames\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -19,9 +21,10 @@ class StockOpnamesTable
         return $table
             ->columns([
                 TextColumn::make('opname_number')
-                    ->label('Opname Number')
+                    ->label('Nomor Opname')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('bold'),
 
                 TextColumn::make('warehouse.name')
                     ->label('Warehouse')
@@ -29,7 +32,7 @@ class StockOpnamesTable
                     ->sortable(),
 
                 TextColumn::make('opname_date')
-                    ->label('Opname Date')
+                    ->label('Tanggal Opname')
                     ->date()
                     ->sortable(),
 
@@ -45,11 +48,11 @@ class StockOpnamesTable
                     ->sortable(),
 
                 TextColumn::make('createdByUser.name')
-                    ->label('Created By')
+                    ->label('Dibuat Oleh')
                     ->searchable(),
 
                 TextColumn::make('created_at')
-                    ->label('Created At')
+                    ->label('Dibuat')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -67,6 +70,22 @@ class StockOpnamesTable
                     ->label('Warehouse'),
             ])
             ->recordActions([
+                Action::make('complete')
+                    ->label('Selesaikan Opname')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Konfirmasi Selesai Opname')
+                    ->modalDescription('Apakah Anda yakin ingin menyelesaikan opname ini? Stok di gudang akan otomatis disesuaikan dengan hasil perhitungan fisik lapangan.')
+                    ->visible(fn ($record) => $record->status !== 'completed')
+                    ->action(function ($record) {
+                        $record->update(['status' => 'completed']);
+                        Notification::make()
+                            ->title('Opname Selesai')
+                            ->body("Stok gudang {$record->warehouse?->name} berhasil disesuaikan secara otomatis.")
+                            ->success()
+                            ->send();
+                    }),
                 EditAction::make(),
             ])
             ->toolbarActions([

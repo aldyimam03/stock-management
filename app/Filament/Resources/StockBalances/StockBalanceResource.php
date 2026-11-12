@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\StockBalances;
 
-use App\Filament\Resources\StockBalances\Pages\CreateStockBalance;
-use App\Filament\Resources\StockBalances\Pages\EditStockBalance;
 use App\Filament\Resources\StockBalances\Pages\ListStockBalances;
 use App\Filament\Resources\StockBalances\Schemas\StockBalanceForm;
 use App\Filament\Resources\StockBalances\Tables\StockBalancesTable;
@@ -19,6 +17,13 @@ class StockBalanceResource extends Resource
     protected static ?string $model = StockBalance::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $navigationLabel = 'Saldo Stok';
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function getNavigationBadge(): ?string
     {
@@ -46,8 +51,6 @@ class StockBalanceResource extends Resource
     {
         return [
             'index' => ListStockBalances::route('/'),
-            'create' => CreateStockBalance::route('/create'),
-            'edit' => EditStockBalance::route('/{record}/edit'),
         ];
     }
 }

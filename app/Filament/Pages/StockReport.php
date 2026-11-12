@@ -2,32 +2,35 @@
 
 namespace App\Filament\Pages;
 
+use App\Exports\StockReportExport;
 use App\Models\StockBalance;
-use App\Models\Product;
 use App\Models\Warehouse;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\EmbeddedTable;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use UnitEnum;
-use BackedEnum;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StockReport extends Page implements HasTable
 {
     use InteractsWithTable;
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-cube-transparent';
+
     protected static ?string $navigationLabel = 'Laporan Stok';
-        protected static \UnitEnum|string|null $navigationGroup = 'Laporan';
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Laporan';
+
     protected static ?string $title = 'Laporan Stok Inventory';
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) \App\Models\StockBalance::count();
+        return (string) StockBalance::count();
     }
 
     public ?int $warehouseId = null;
@@ -37,6 +40,21 @@ class StockReport extends Page implements HasTable
         $this->mountInteractsWithTable();
         $this->warehouseId = null;
         $this->bootedInteractsWithTable();
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('export_excel')
+                ->label('Ekspor ke Excel')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('success')
+                ->action(function () {
+                    $filename = 'laporan-stok-'.date('Y-m-d-His').'.xlsx';
+
+                    return Excel::download(new StockReportExport($this->warehouseId), $filename);
+                }),
+        ];
     }
 
     public function content(Schema $schema): Schema
@@ -60,8 +78,8 @@ class StockReport extends Page implements HasTable
                     ->label('Produk')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('product.sku')
-                    ->label('SKU')
+                TextColumn::make('product.slug')
+                    ->label('Kode')
                     ->searchable(),
                 TextColumn::make('warehouse.name')
                     ->label('Warehouse')

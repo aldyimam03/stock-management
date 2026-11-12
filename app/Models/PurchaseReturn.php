@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\NumberSeriesService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PurchaseReturn extends Model
@@ -11,8 +14,13 @@ class PurchaseReturn extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'return_number', 'goods_receipt_id', 'warehouse_id',
-        'return_date', 'status', 'created_by', 'notes',
+        'return_number',
+        'goods_receipt_id',
+        'warehouse_id',
+        'return_date',
+        'status',
+        'created_by',
+        'notes',
     ];
 
     protected $casts = [
@@ -21,26 +29,32 @@ class PurchaseReturn extends Model
 
     protected static function booted(): void
     {
-        static::saving(function ($pr) {
+        static::creating(function ($pr) {
             if (empty($pr->return_number)) {
-                $prefix = date('Y-PR');
-                $count = static::count(['return_number LIKE' => $prefix . '%']) + 1;
-                $pr->return_number = $prefix . '-' . strtoupper(fake()->unique()->numerify('######'));
+                $pr->return_number = NumberSeriesService::generate('PR', 'PR');
+            }
+            if (empty($pr->created_by) && auth()->check()) {
+                $pr->created_by = auth()->id();
             }
         });
     }
 
-    public function goodsReceipt()
+    public function items(): HasMany
+    {
+        return $this->hasMany(PurchaseReturnItem::class);
+    }
+
+    public function goodsReceipt(): BelongsTo
     {
         return $this->belongsTo(GoodsReceipt::class);
     }
 
-    public function warehouse()
+    public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function createdByUser()
+    public function createdByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }

@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\NumberSeriesService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SalesOrder extends Model
@@ -11,8 +14,15 @@ class SalesOrder extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'order_number', 'customer_id', 'warehouse_id', 'order_date', 'expected_delivery_date',
-        'status', 'total_amount', 'created_by', 'notes',
+        'order_number',
+        'customer_id',
+        'warehouse_id',
+        'order_date',
+        'expected_delivery_date',
+        'status',
+        'total_amount',
+        'created_by',
+        'notes',
     ];
 
     protected $casts = [
@@ -23,31 +33,43 @@ class SalesOrder extends Model
 
     protected static function booted(): void
     {
-        static::saving(function ($so) {
+        static::creating(function (SalesOrder $so) {
             if (empty($so->order_number)) {
-                $prefix = date('Y') . '-SO';
-                $count = static::count(['order_number LIKE' => $prefix . '%']) + 1;
-                $so->order_number = $prefix . strtoupper(fake()->unique()->numerify('######'));
+                $so->order_number = NumberSeriesService::generate('SO', 'SO');
+            }
+            if (empty($so->created_by) && auth()->check()) {
+                $so->created_by = auth()->id();
             }
         });
     }
 
-    public function customer()
+    public function recalculateTotal(): void
+    {
+        $total = $this->items()->sum('subtotal');
+        $this->updateQuietly(['total_amount' => $total]);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(SalesOrderItem::class);
+    }
+
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function warehouse()
+    public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function shipments()
+    public function shipments(): HasMany
     {
         return $this->hasMany(Shipment::class);
     }
 
-    public function createdByUser()
+    public function createdByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }

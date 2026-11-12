@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\NumberSeriesService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,11 +22,12 @@ class StockOpname extends Model
 
     protected static function booted(): void
     {
-        static::saving(function ($so) {
+        static::creating(function ($so) {
             if (empty($so->opname_number)) {
-                $prefix = date('Y-OP');
-                $count = static::count(['opname_number LIKE' => $prefix . '%']) + 1;
-                $so->opname_number = $prefix . '-' . strtoupper(fake()->unique()->numerify('######'));
+                $so->opname_number = NumberSeriesService::generate('OP', 'OP');
+            }
+            if (empty($so->created_by) && auth()->check()) {
+                $so->created_by = auth()->id();
             }
         });
     }

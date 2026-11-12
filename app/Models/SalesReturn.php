@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\NumberSeriesService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SalesReturn extends Model
@@ -11,8 +14,13 @@ class SalesReturn extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'return_number', 'shipment_id', 'warehouse_id',
-        'return_date', 'status', 'created_by', 'notes',
+        'return_number',
+        'shipment_id',
+        'warehouse_id',
+        'return_date',
+        'status',
+        'created_by',
+        'notes',
     ];
 
     protected $casts = [
@@ -21,26 +29,32 @@ class SalesReturn extends Model
 
     protected static function booted(): void
     {
-        static::saving(function ($sr) {
+        static::creating(function ($sr) {
             if (empty($sr->return_number)) {
-                $prefix = date('Y-SR');
-                $count = static::count(['return_number LIKE' => $prefix . '%']) + 1;
-                $sr->return_number = $prefix . '-' . strtoupper(fake()->unique()->numerify('######'));
+                $sr->return_number = NumberSeriesService::generate('SR', 'SR');
+            }
+            if (empty($sr->created_by) && auth()->check()) {
+                $sr->created_by = auth()->id();
             }
         });
     }
 
-    public function shipment()
+    public function items(): HasMany
+    {
+        return $this->hasMany(SalesReturnItem::class);
+    }
+
+    public function shipment(): BelongsTo
     {
         return $this->belongsTo(Shipment::class);
     }
 
-    public function warehouse()
+    public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function createdByUser()
+    public function createdByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }

@@ -2,42 +2,45 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\StockMovement;
 use App\Models\Product;
+use App\Models\StockMovement;
 use App\Models\Warehouse;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\EmbeddedTable;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use UnitEnum;
-use BackedEnum;
 
 class InventoryMovementReport extends Page implements HasTable
 {
     use InteractsWithTable;
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-arrow-path';
+
     protected static ?string $navigationLabel = 'Mutasi Stok';
+
     protected static \UnitEnum|string|null $navigationGroup = 'Laporan';
+
     protected static ?string $title = 'Laporan Mutasi Stok';
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) \App\Models\StockMovement::count();
+        return (string) StockMovement::count();
     }
 
     public ?string $type = null;
+
     public ?int $productId = null;
+
     public ?int $warehouseId = null;
+
     public ?string $dateFrom = null;
+
     public ?string $dateTo = null;
 
     public function mount(): void
@@ -75,8 +78,8 @@ class InventoryMovementReport extends Page implements HasTable
                     ->label('Produk')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('product.sku')
-                    ->label('SKU')
+                TextColumn::make('product.slug')
+                    ->label('Kode')
                     ->searchable(),
                 TextColumn::make('warehouse.name')
                     ->label('Warehouse')

@@ -4,16 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StockOpnameItem extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
-        'stock_opname_id', 'product_id',
-        'system_quantity', 'physical_quantity', 'difference',
-        'uom', 'notes',
+        'stock_opname_id',
+        'product_id',
+        'system_quantity',
+        'physical_quantity',
+        'difference',
+        'uom',
+        'notes',
     ];
 
     protected $casts = [

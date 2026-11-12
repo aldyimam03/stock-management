@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Transfer;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class TransferPolicy
 {
@@ -13,7 +12,7 @@ class TransferPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->isAdmin() || $user->isStaff();
     }
 
     /**
@@ -21,7 +20,7 @@ class TransferPolicy
      */
     public function view(User $user, Transfer $transfer): bool
     {
-        return false;
+        return $user->isAdmin() || $user->isStaff();
     }
 
     /**
@@ -29,7 +28,7 @@ class TransferPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isAdmin() || $user->isStaff();
     }
 
     /**
@@ -37,7 +36,7 @@ class TransferPolicy
      */
     public function update(User $user, Transfer $transfer): bool
     {
-        return false;
+        return $user->isAdmin() || ($user->isStaff() && $transfer->isDraft());
     }
 
     /**
@@ -45,7 +44,7 @@ class TransferPolicy
      */
     public function delete(User $user, Transfer $transfer): bool
     {
-        return false;
+        return $user->isAdmin() || ($user->isStaff() && $transfer->isDraft());
     }
 
     /**
@@ -53,7 +52,7 @@ class TransferPolicy
      */
     public function restore(User $user, Transfer $transfer): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -61,6 +60,6 @@ class TransferPolicy
      */
     public function forceDelete(User $user, Transfer $transfer): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 }

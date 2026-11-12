@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Models\UnitOfMeasure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -16,13 +17,13 @@ class ProductForm
         return $schema
             ->components([
                 TextInput::make('slug')
-                    ->label('Kode')
+                    ->label('Kode Produk')
                     ->unique(ignoreRecord: true)
                     ->copyable()
-                    ->default(fn () => Str::slug(fake()->sentence(3)))
+                    ->default(fn () => 'PRD-'.strtoupper(Str::random(6)))
                     ->required(),
                 TextInput::make('name')
-                    ->label('Nama')
+                    ->label('Nama Produk')
                     ->required(),
                 Textarea::make('description')
                     ->label('Deskripsi')
@@ -33,34 +34,44 @@ class ProductForm
                     ->searchable()
                     ->preload()
                     ->required(),
+                Select::make('unit_of_measure_id')
+                    ->label('Satuan (UoM)')
+                    ->relationship('unitOfMeasure', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $uom = UnitOfMeasure::find($state);
+                            if ($uom) {
+                                $set('unit', $uom->code);
+                            }
+                        }
+                    }),
                 TextInput::make('unit')
-                    ->label('Satuan')
+                    ->label('Simbol Satuan')
                     ->required()
-                    ->placeholder('pcs, kg, ltr, etc.'),
+                    ->default('pcs')
+                    ->placeholder('pcs, kg, ltr, dll.'),
                 TextInput::make('cost_price')
-                    ->label('Harga Beli')
+                    ->label('Harga Beli / Modal')
                     ->required()
                     ->numeric()
-                    ->placeholder('3.000')
                     ->prefix('Rp'),
                 TextInput::make('selling_price')
                     ->label('Harga Jual')
                     ->required()
                     ->numeric()
-                    ->placeholder('3.000')
                     ->prefix('Rp'),
-                TextInput::make('stock_quantity')
-                    ->label('Stok')
-                    ->numeric()
-                    ->placeholder('0')
-                    ->required(),
                 TextInput::make('minimum_stock')
-                    ->label('Stok Minimum')
+                    ->label('Batas Minimum Stok')
                     ->required()
                     ->numeric()
-                    ->placeholder('0'),
+                    ->default(10)
+                    ->helperText('Sistem akan memberikan peringatan jika stok berada di bawah batas ini.'),
                 Toggle::make('is_active')
-                    ->label('Aktif')
+                    ->label('Status Aktif')
+                    ->default(true)
                     ->required(),
             ]);
     }

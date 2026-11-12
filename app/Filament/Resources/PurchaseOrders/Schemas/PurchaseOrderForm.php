@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\PurchaseOrders\Schemas;
 
-use Filament\Forms\Components\Select;
+use App\Models\Product;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
@@ -23,7 +25,7 @@ class PurchaseOrderForm
                         ->searchable()
                         ->preload(),
                     Select::make('warehouse_id')
-                        ->label('Warehouse')
+                        ->label('Warehouse Tujuan')
                         ->relationship('warehouse', 'name')
                         ->required()
                         ->searchable()
@@ -32,9 +34,11 @@ class PurchaseOrderForm
                 Grid::make(3)->schema([
                     DatePicker::make('order_date')
                         ->label('Tanggal PO')
+                        ->default(now())
                         ->required(),
                     DatePicker::make('expected_date')
                         ->label('Tanggal Diharapkan')
+                        ->default(now()->addDays(7))
                         ->required(),
                     Select::make('status')
                         ->label('Status')
@@ -48,12 +52,55 @@ class PurchaseOrderForm
                         ->required()
                         ->default('draft'),
                 ]),
-                Grid::make(2)->schema([
+                Repeater::make('items')
+                    ->label('Item Pesanan Pembelian')
+                    ->relationship('items')
+                    ->schema([
+                        Grid::make(3)->schema([
+                            Select::make('product_id')
+                                ->label('Produk')
+                                ->relationship('product', 'name')
+                                ->required()
+                                ->searchable()
+                                ->preload()
+                                ->live()
+                                ->afterStateUpdated(function ($state, callable $set) {
+                                    if ($state) {
+                                        $product = Product::find($state);
+                                        if ($product) {
+                                            $set('unit_price', $product->cost_price);
+                                        }
+                                    }
+                                }),
+                            TextInput::make('quantity')
+                                ->label('Kuantitas')
+                                ->numeric()
+                                ->required()
+                                ->default(1)
+                                ->minValue(0.01)
+                                ->step(0.01)
+                                ->live(),
+                            TextInput::make('unit_price')
+                                ->label('Harga Satuan (Rp)')
+                                ->numeric()
+                                ->prefix('Rp')
+                                ->required()
+                                ->default(0)
+                                ->live(),
+                        ]),
+                    ])
+                    ->columns(1)
+                    ->defaultItems(1)
+                    ->reorderableWithButtons()
+                    ->addActionLabel('Tambah Item Produk'),
+                Grid::make(1)->schema([
                     TextInput::make('total_amount')
-                        ->label('Total (Rp)')
+                        ->label('Total PO (Rp)')
                         ->numeric()
                         ->prefix('Rp')
-                        ->default(0),
+                        ->disabled()
+                        ->dehydrated(false)
+                        ->helperText('Dihitung otomatis dari subtotal item pesanan.'),
                 ]),
                 Textarea::make('notes')
                     ->label('Catatan')

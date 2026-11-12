@@ -18,6 +18,7 @@ class Product extends Model
         'name',
         'description',
         'category_id',
+        'unit_of_measure_id',
         'unit',
         'cost_price',
         'selling_price',
@@ -38,5 +39,13 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * @return BelongsTo<UnitOfMeasure, $this>
+     */
+    public function unitOfMeasure(): BelongsTo
+    {
+        return $this->belongsTo(UnitOfMeasure::class);
     }
 }
